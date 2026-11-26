@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Browine">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="description" content="Bebe agua con tu carpincho">
+  <title>Browine</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" id="favicon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Splash -->
+    <div id="splash" class="splash">
+      <svg viewBox="0 30 335 430" class="splash-capy"></svg>
+      <div class="splash-word" aria-label="Browine"></div>
+    </div>
+
+    <!-- HOME -->
+    <main id="home" class="screen home">
+      <header class="topbar">
+        <button class="streak" id="streakBtn" aria-label="Racha">
+          <svg viewBox="0 0 36 36" class="streak-ring"><circle cx="18" cy="18" r="15" class="ring-bg"/><circle cx="18" cy="18" r="15" class="ring-fg" id="streakRing"/></svg>
+          <span class="streak-num" id="streakNum">0</span><span class="streak-label" id="streakLabel">días</span>
+        </button>
+        <button class="icon-btn" id="menuBtn" aria-label="Menú"></button>
+      </header>
+
+      <div class="home-scroll" id="homeScroll">
+        <section class="counter" id="counter" role="button" tabindex="0">
+          <div class="counter-value" id="counterValue">0ml</div>
+          <div class="counter-sub"><span id="counterSub">Hidratación · 0% de tu meta</span> <i class="drop-ico"></i></div>
+        </section>
+
+        <section class="hero" id="hero">
+          <div class="hero-bob">
+            <svg viewBox="0 30 335 430" id="heroSvg" class="hero-svg"></svg>
+          </div>
+          <svg class="sea" viewBox="0 0 400 40" preserveAspectRatio="none" id="sea"></svg>
+        </section>
+
+        <nav class="drink-row" id="drinkRow"></nav>
+
+        <section class="setup-card" id="setupCard"></section>
+        <section class="block" id="limitedBlock"></section>
+        <section class="block" id="tipsBlock"></section>
+        <section class="block" id="habitsBlock"></section>
+        <div class="footer-note">Browine · Hecho con agua y cariño 💧</div>
+      </div>
+
+      <button class="setup-pill" id="setupPill"></button>
+    </main>
+
+    <!-- ADD DRINK -->
+    <section id="addDrink" class="screen add" hidden>
+      <button class="icon-btn close" id="addClose" aria-label="Cerrar"></button>
+      <div class="add-stage" id="addStage">
+        <div class="add-vessel" id="addVessel"></div>
+        <div class="handle" id="handle"></div>
+      </div>
+      <div class="add-amount">
+        <span id="addAmount">250ml</span>
+        <button class="add-next" id="addNext">330ml</button>
+      </div>
+      <div class="add-actions">
+        <button class="add-prev" id="addPrev" aria-label="Tamaño anterior"></button>
+        <button class="btn add-btn" id="addBtn">+ AGUA</button>
+        <button class="add-more" id="addMore" aria-label="Más opciones"></button>
+      </div>
+    </section>
+
+    <!-- Generic layers -->
+    <section id="panel" class="panel" hidden></section>
+    <div id="sheetBackdrop" class="backdrop" hidden></div>
+    <section id="sheet" class="sheet" hidden></section>
+    <div id="modal" class="modal" hidden></div>
+    <div id="toast" class="toast" hidden></div>
+    <canvas id="fx" class="fx"></canvas>
+    <div id="flyer" class="flyer"></div>
+  </div>
+
+  <script src="js/art.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
