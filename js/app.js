@@ -643,6 +643,7 @@
       ${rowHtml('reset', miniIcon('#F0607A', '<circle cx="12" cy="12" r="6" fill="none" stroke="#fff" stroke-width="2"/><path d="M12 9v3l2 1" stroke="#fff" stroke-width="2" fill="none"/>'), 'Hora de reinicio del día', String(S.resetHour).padStart(2, '0') + ':00')}
       ${rowHtml('kcal', miniIcon('#FFA00A', '<path d="M12 5c1 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z" fill="#fff"/>'), 'Calorías', '', S.kcal)}
       ${rowHtml('units', miniIcon('#FFD23F', '<path d="M7 17V7l5 6 5-6v10" stroke="#fff" stroke-width="2" fill="none"/>'), 'Unidades de medida', S.units)}
+      ${STANDALONE ? '' : rowHtml('install', miniIcon('#2747B8', '<path d="M12 6v8M8 10l4 4 4-4M7 18h10" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>'), 'Instalar en tu teléfono')}
       <button class="btn share-btn" data-act="share">${A.ICON.hand} Hidrata a tus amigos</button>
       ${rowHtml('wipe', miniIcon('#C7CDD3', '<path d="M8 8l8 8M16 8l-8 8" stroke="#fff" stroke-width="2"/>'), 'Borrar datos de hoy')}
       <div class="small-print">Browine 1.0 · Todos los gráficos se generan con código</div>`;
@@ -664,19 +665,38 @@
         kcal: () => { S.kcal = !S.kcal; save(); b.querySelector('.switch').classList.toggle('on', S.kcal); updateCounter(false); },
         units: () => { S.units = S.units === 'ml' ? 'oz' : 'ml'; save(); renderMenu(p); updateCounter(false); },
         share: shareApp,
+        install: () => openInstallSheet(),
         wipe: () => { if (confirm('¿Borrar todas las bebidas de hoy?')) { S.entries = []; save(); buildLayers(true); updateCounter(true); renderMenu(p); } },
       })[act]();
     };
   }
 
+  const IS_IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const STANDALONE = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+
   async function enableReminders() {
-    if (!('Notification' in window)) { toast('Tu navegador no admite notificaciones'); return; }
+    if (!('Notification' in window)) {
+      if (IS_IOS && !STANDALONE) openInstallSheet('Para activar los recordatorios, primero instala Browine en tu pantalla de inicio.');
+      else toast('Este navegador no permite notificaciones');
+      return;
+    }
     const perm = await Notification.requestPermission();
     if (perm === 'granted') {
       S.reminders.on = true; S.setup.reminders = true; save();
       toast('¡Recordatorios activados! ⏰');
+      notify('¡Listo! Te avisaré cuando sea hora de beber agua 💧');
       renderSetup();
     } else toast('Permiso de notificaciones denegado');
+  }
+  // iPhone only shows notifications through the service worker
+  function notify(body) {
+    const opts = { body, icon: 'icon-192.png', badge: 'icon-192.png', tag: 'browine-reminder' };
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.ready.then((reg) => reg.showNotification('Browine', opts)).catch(() => {});
+    } else {
+      try { new Notification('Browine', opts); } catch (e) { /* not supported here */ }
+    }
   }
   function reminderTick() {
     if (!S.reminders.on || !('Notification' in window) || Notification.permission !== 'granted') return;
@@ -685,7 +705,7 @@
     const last = Math.max(S.entries.length ? S.entries[S.entries.length - 1].ts : 0, S.reminders.last);
     if (Date.now() - last > S.reminders.every * 60e3) {
       S.reminders.last = Date.now(); save();
-      try { new Notification('Browine', { body: '¡Hora de un vaso de agua! El carpincho tiene sed 💧', icon: 'icon.svg' }); } catch (e) { /* noop */ }
+      notify('¡Hora de un vaso de agua! El carpincho tiene sed 💧');
     }
   }
 
@@ -1000,6 +1020,48 @@
   }
   function iconSmall() { return `<svg viewBox="0 0 100 100" style="width:22px;height:22px;border-radius:50%">${iconInner(S.icon, 100)}</svg>`; }
 
+  /* ================= Install (Add to Home Screen) ================= */
+  let installPrompt = null; // Android / desktop Chrome
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    installPrompt = e;
+    if (!S.installHint) setTimeout(() => autoInstallHint(), 2500);
+  });
+  const SHARE_ICO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M7 10H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-1"/></svg>';
+  const ADD_ICO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
+
+  function openInstallSheet(reason) {
+    const steps = IS_IOS
+      ? `<div class="step"><span class="n">${SHARE_ICO}</span><span>Toca <b>Compartir</b> en Safari (si no lo ves, está en el menú <b>•••</b>)</span></div>
+         <div class="step"><span class="n">${ADD_ICO}</span><span>Elige <b>Añadir a pantalla de inicio</b></span></div>
+         <div class="step"><span class="n">${A.ICON.check}</span><span>Toca <b>Añadir</b> y abre Browine desde su icono</span></div>
+         <p class="small-print">¿No aparece la opción? Abre este enlace en Safari.</p>`
+      : installPrompt
+        ? '<button class="btn" id="installBtn">INSTALAR</button>'
+        : `<div class="step"><span class="n">${A.ICON.dots}</span><span>Abre el menú del navegador</span></div>
+           <div class="step"><span class="n">${ADD_ICO}</span><span>Elige <b>Instalar app</b> o <b>Añadir a pantalla de inicio</b></span></div>`;
+    openSheet(`<div class="install-ico">${iconSvg(S.icon)}</div>
+      <h3>Instala Browine</h3>
+      <p class="sub">${reason || 'Tenla en tu pantalla de inicio como una app: a pantalla completa y sin conexión.'}</p>
+      ${steps}
+      <button class="ghost-btn" data-x>Ahora no</button>`, (s) => {
+      const ib = $('#installBtn', s);
+      if (ib) ib.onclick = async () => {
+        installPrompt.prompt();
+        try { await installPrompt.userChoice; } catch (e) { /* dismissed */ }
+        installPrompt = null;
+        closeSheet();
+      };
+      $('[data-x]', s).onclick = closeSheet;
+    });
+  }
+  function autoInstallHint() {
+    if (STANDALONE || S.installHint || !sheet.hidden || !$('#modal').hidden || !addEl.hidden || !panel.hidden) return;
+    if (!IS_IOS && !installPrompt) return;
+    S.installHint = true; save();
+    openInstallSheet();
+  }
+
   /* ================= Splash ================= */
   async function splash() {
     const s = $('#splash');
@@ -1038,6 +1100,7 @@
     window.addEventListener('resize', sizeFx);
     requestAnimationFrame(loop);
     splash();
+    if (IS_IOS) setTimeout(autoInstallHint, 2600);
     setInterval(() => {
       if (rollover()) { buildLayers(false); updateCounter(false); renderTips(); renderHabits(); }
       reminderTick();

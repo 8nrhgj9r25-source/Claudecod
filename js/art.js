@@ -31,7 +31,8 @@
     }
     const { fur, dark, light } = o;
     const sw = 'stroke="' + OUT + '" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"';
-    const fine = 'stroke="' + OUT + '" stroke-width="4" fill="none" stroke-linecap="round"';
+    const line = (w) => 'stroke="' + OUT + '" stroke-width="' + w + '" fill="none" stroke-linecap="round"';
+    const fine = line(4);
     const tuft = 'stroke="' + dark + '" stroke-width="3" fill="none" stroke-linecap="round" opacity=".55"';
     return `
     <g class="capy">
@@ -44,16 +45,16 @@
       <path d="${CAPY.snout}" fill="${dark}" opacity=".85"/>
       <ellipse cx="246" cy="128" rx="5" ry="7" fill="${OUT}" transform="rotate(-15 246 128)"/>
       <path d="M244 152 C248 160 254 162 258 156 M244 152 C240 162 232 164 228 158" ${fine}/>
-      <g class="capy-eye"><path d="M162 124 Q176 108 190 122" ${fine} stroke-width="5"/></g>
+      <g class="capy-eye"><path d="M162 124 Q176 108 190 122" ${line(5)}/></g>
       <ellipse class="capy-blush" cx="196" cy="146" rx="11" ry="6" fill="#F07C6C" opacity=".35"/>
       <path d="M60 240 l-10 -6 M66 210 l-9 -8 M80 170 l-8 -6 M228 300 l8 -3 M70 330 l-9 2" ${tuft}/>
       <path d="M150 180 l6 6 M120 150 l4 7 M180 270 l5 6 M100 260 l4 7 M200 220 l4 6" ${tuft}/>
       <path d="M158 238 C176 250 182 272 172 292" ${fine}/>
       <g class="capy-paws">
         <path d="M170 262 C186 252 206 262 204 280 C202 294 188 298 178 290 C168 282 162 270 170 262 Z" fill="${dark}" ${sw}/>
-        <path d="M184 288 l-2 -8 M194 288 l0 -9" ${fine} stroke-width="3"/>
+        <path d="M184 288 l-2 -8 M194 288 l0 -9" ${line(3)}/>
         <path d="M214 252 C228 246 244 256 240 274 C236 288 222 290 214 282 C206 274 206 258 214 252 Z" fill="${dark}" ${sw}/>
-        <path d="M222 280 l1 -8 M231 280 l2 -8" ${fine} stroke-width="3"/>
+        <path d="M222 280 l1 -8 M231 280 l2 -8" ${line(3)}/>
       </g>
       <path d="${CAPY.footL}" fill="${dark}" ${sw}/>
       <path d="${CAPY.footR}" fill="${dark}" ${sw}/>

@@ -2,9 +2,18 @@
 
 App de hidratación con un carpincho (capibara) surfista. Cada bebida que registras llena la silueta del carpincho con el color de esa bebida; cuando cumples tu meta, el carpincho aparece a todo color.
 
-**Todos los gráficos y animaciones están hechos con código**: SVG generado en JavaScript, animaciones CSS, Web Animations API y un motor de partículas en `<canvas>`. No se usa ninguna imagen.
+**Todos los gráficos y animaciones están hechos con código**: SVG generado en JavaScript, animaciones CSS, Web Animations API y un motor de partículas en `<canvas>`. Las únicas imágenes son los iconos PNG de la app, que se generan a partir de ese mismo dibujo.
 
-## Ejecutar
+## Instalarla en el teléfono
+
+Versión publicada con GitHub Pages (rama `main`): **https://8nrhgj9r25-source.github.io/Claudecod/**
+
+- **iPhone:** abre el enlace en Safari → Compartir → "Añadir a pantalla de inicio" → Añadir.
+- **Android (Chrome):** menú ⋮ → "Instalar app".
+
+La app instalada se abre a pantalla completa, funciona sin conexión y guarda los datos en el teléfono. La propia app muestra estas instrucciones la primera vez que la abres en Safari.
+
+## Ejecutar en local
 
 Es una web app (PWA) sin dependencias ni compilación:
 
@@ -13,7 +22,7 @@ python3 -m http.server 8000
 # abre http://localhost:8000 (mejor en vista de móvil)
 ```
 
-También funciona abriendo `index.html` directamente (sin modo offline). En el móvil: Compartir → "Añadir a pantalla de inicio".
+Los iconos PNG se generan a partir del carpincho dibujado en `js/art.js`: `node tools/make-icons.js` (necesita Playwright).
 
 ## Pantallas y flujo
 
@@ -39,6 +48,7 @@ css/styles.css        estilos y animaciones de la interfaz
 js/art.js             ilustraciones en SVG: carpincho, accesorios, tabla, 9 recipientes, iconos, reloj y teléfono con widgets
 js/data.js            bebidas, personajes, desafíos y consejos
 js/app.js             estado (localStorage), animación del líquido, partículas y todas las pantallas
-sw.js / manifest      PWA sin conexión
-icon.svg              icono generado con art.js
+sw.js / manifest      PWA sin conexión y avisos
+icon.svg, *.png       iconos generados con tools/make-icons.js
+.nojekyll             GitHub Pages publica los archivos tal cual
 ```

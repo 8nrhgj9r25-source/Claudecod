@@ -295,7 +295,7 @@ svg { display: block; }
 @keyframes inBottom { from { transform: translateY(100%); } }
 @keyframes outBottom { to { transform: translateY(100%); } }
 
-.panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; position: sticky; top: 0; z-index: 3; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding-bottom: 8px; position: sticky; top: 0; z-index: 3; background: linear-gradient(#fff 80%, rgba(255, 255, 255, 0)); }
 .pill-btn { height: 34px; padding: 0 14px; border-radius: 17px; background: var(--soft); font-weight: 900; font-size: 12px; letter-spacing: .5px; display: inline-flex; align-items: center; gap: 6px; }
 .pill-btn.blue { background: var(--blue); color: #fff; }
 .pill-btn svg { width: 14px; height: 14px; }
@@ -460,10 +460,10 @@ input[type=range] { width: 100%; accent-color: var(--blue); }
   position: absolute; z-index: 70; left: 50%; top: calc(14px + var(--safe-top));
   transform: translateX(-50%); background: var(--ink); color: #fff; border-radius: 20px;
   padding: 10px 16px; font-weight: 800; font-size: 14px; display: flex; gap: 12px; align-items: center;
-  white-space: nowrap; box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+  width: max-content; max-width: calc(100% - 32px); box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
   animation: toastIn .45s var(--ease-spring) both;
 }
-.toast button { color: #6FD8F7; font-weight: 900; }
+.toast button { color: #6FD8F7; font-weight: 900; flex: 0 0 auto; }
 @keyframes toastIn { from { transform: translate(-50%, -150%); } }
 
 .fx { position: absolute; inset: 0; z-index: 80; pointer-events: none; width: 100%; height: 100%; }
@@ -471,3 +471,8 @@ input[type=range] { width: 100%; accent-color: var(--blue); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* ---------- Install sheet ---------- */
+.install-ico { width: 72px; height: 72px; border-radius: 18px; overflow: hidden; margin: 4px auto 12px; animation: pop .5s var(--ease-spring) both; box-shadow: 0 8px 20px rgba(20, 180, 224, .3); }
+.sheet .step b { color: var(--ink); }
+.ghost-btn { width: 100%; height: 46px; margin-top: 8px; border-radius: 23px; background: var(--soft); font-weight: 800; }
