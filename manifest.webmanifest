@@ -1,0 +1,11 @@
+{
+  "name": "Browine",
+  "short_name": "Browine",
+  "description": "Bebe agua con tu carpincho",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#14B4E0",
+  "lang": "es",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
